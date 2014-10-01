@@ -46,11 +46,11 @@ library
   -- Modules exported by the library.
   exposed-modules:
       LMonad
-    , LMonad.Label
     , LMonad.TCB
   
   -- Modules included in this library but not exported.
-  -- other-modules:
+  other-modules:
+      LMonad.Label
 
   hs-source-dirs:
       src
