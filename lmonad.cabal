@@ -22,7 +22,7 @@ version:             0.1.0.0
 -- license:             
 
 -- The file containing the license text.
-license-file:        LICENSE
+-- TODO: license-file:        LICENSE XXX
 
 -- The package author(s).
 author:              James Parker
