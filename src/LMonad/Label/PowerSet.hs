@@ -6,7 +6,7 @@ import Prelude
 
 import LMonad.Label
 
--- | PowerSet label made of all the principals. 
+-- | Power set label made of all combinations of the principals. 
 data Ord p => PowerSetLabel p = PowerSetLabel {
         powerSetLabelConfidentiality :: Set p
       , powerSetLabelIntegrity :: Set p
@@ -33,3 +33,6 @@ instance Ord p => Label (PowerSetLabel p) where
     -- Bottom
     bottom = 
         PowerSetLabel Set.empty Set.empty
+
+-- | Type alias for labeled power sets.
+type PowerSetLabeled p = Labeled PowerSetLabel p
