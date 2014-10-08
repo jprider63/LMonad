@@ -8,8 +8,8 @@ import LMonad
 
 -- | Power set label made of all combinations of the principals. 
 data Ord p => PSLabel p = PSLabel {
-        powerSetLabelConfidentiality :: Set p
-      , powerSetLabelIntegrity :: Set p
+        psLabelConfidentiality :: Set p
+      , psLabelIntegrity :: Set p
     }
         deriving Show
 
