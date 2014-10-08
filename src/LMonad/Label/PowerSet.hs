@@ -4,7 +4,7 @@ import Data.Set (Set)
 import qualified Data.Set as Set
 import Prelude
 
-import LMonad.Label
+import LMonad
 
 -- | Power set label made of all combinations of the principals. 
 data Ord p => PowerSetLabel p = PowerSetLabel {
@@ -35,4 +35,4 @@ instance Ord p => Label (PowerSetLabel p) where
         PowerSetLabel Set.empty Set.empty
 
 -- | Type alias for labeled power sets.
-type PowerSetLabeled p = Labeled PowerSetLabel p
+type PowerSetLabeled p = Labeled (PowerSetLabel p)
