@@ -20,4 +20,6 @@ import LMonad.TCB as LMonad (
     )
 
 -- most code should import LMonad
--- trusted code can import LMonad.TCB for
+-- trusted code can import LMonad.TCB
+--
+-- You will also need to import a LMonad.Label.* module or create an instance of Label.

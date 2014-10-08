@@ -46,6 +46,7 @@ library
   -- Modules exported by the library.
   exposed-modules:
       LMonad
+    , LMonad.Label.PowerSet
     , LMonad.TCB
   
   -- Modules included in this library but not exported.
@@ -64,5 +65,6 @@ library
   -- Other library packages from which modules are imported.
   build-depends:
       base ==4.5.*
+    , containers
     , transformers
   
