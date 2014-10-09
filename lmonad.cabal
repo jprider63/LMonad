@@ -58,7 +58,7 @@ library
       src
   
   ghc-options:
-      -Wall -O2
+      -Wall -fno-warn-name-shadowing -O2
 
   extensions:
       DoAndIfThenElse

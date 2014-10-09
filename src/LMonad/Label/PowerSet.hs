@@ -26,7 +26,7 @@ instance Ord p => Label (PSLabel p) where
         let i = Set.union i1 i2 in
         PSLabel c i
 
-    -- canFlowTo
+    -- Flow to
     canFlowTo (PSLabel c1 i1) (PSLabel c2 i2) =
         (Set.isSubsetOf c1 c2) && (Set.isSubsetOf i1 i2)
 
