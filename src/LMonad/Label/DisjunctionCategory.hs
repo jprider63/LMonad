@@ -23,7 +23,13 @@ data Ord p => DCLabel p = DCLabel {
       , dcIntegrity :: Conjunction p
     }
 
--- TODO: normalize, implies XXX
+-- | Convenience function to convert a principal to confidentiality DCLabel.
+dcConfidentialitySingleton :: Ord p => p -> DCLabel p
+dcConfidentialitySingleton p = DCLabel (Set.singleton (Set.singleton p)) Set.empty
+
+-- | Convenience function to convert a principal to integrity DCLabel.
+dcIntegritySingleton :: Ord p => p -> DCLabel p
+dcIntegritySingleton p = DCLabel Set.empty (Set.singleton (Set.singleton p))
 
 -- O(n)
 forall :: (a -> Bool) -> Set a -> Bool
