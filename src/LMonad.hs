@@ -1,6 +1,6 @@
 -- | A generalization of LIO's core components to work for any monad, instead of just IO. 
 
-module LMonad (module LMonad) where
+module LMonad (module LMonad, ToLabel(..)) where
 
 import LMonad.TCB as LMonad ( 
         Label (..)
