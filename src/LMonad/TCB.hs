@@ -18,6 +18,7 @@ module LMonad.TCB (
       , unlabel
       , labelOf
       , toLabeledTCB
+      , ToLabel(..)
     ) where
 
 import Control.Monad
@@ -36,6 +37,11 @@ data Label l => LState l = LState {
         lStateLabel :: !l
       , lStateClearance :: !l
     }
+
+-- | Type class to convert a given type to a given label.
+class ToLabel t l where
+    toConfidentialityLabel :: t -> l
+    toIntegrityLabel :: t -> l
 
 -- Transformer monad that wraps the underlying monad and keeps track of information flow. 
 data (Label l, Monad m, LMonad m) => LMonadT l m a = LMonadT {

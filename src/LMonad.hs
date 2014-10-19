@@ -1,6 +1,6 @@
 -- | A generalization of LIO's core components to work for any monad, instead of just IO. 
 
-module LMonad (module LMonad, ToLabel(..)) where
+module LMonad (module LMonad) where
 
 import LMonad.TCB as LMonad ( 
         Label (..)
@@ -17,6 +17,7 @@ import LMonad.TCB as LMonad (
       , label
       , unlabel
       , labelOf
+      , ToLabel(..)
     )
 
 -- most code should import LMonad
@@ -24,7 +25,3 @@ import LMonad.TCB as LMonad (
 --
 -- You will also need to import a LMonad.Label.* module or create an instance of Label.
 
--- | Type class to convert a given type to a given label.
-class ToLabel t l where
-    toConfidentialityLabel :: t -> l
-    toIntegrityLabel :: t -> l
