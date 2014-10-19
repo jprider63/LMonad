@@ -23,3 +23,8 @@ import LMonad.TCB as LMonad (
 -- trusted code can import LMonad.TCB
 --
 -- You will also need to import a LMonad.Label.* module or create an instance of Label.
+
+-- | Type class to convert a given type to a given label.
+class ToLabel t l where
+    toConfidentialityLabel :: t -> l
+    toIntegrityLabel :: t -> l

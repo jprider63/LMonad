@@ -62,6 +62,7 @@ library
 
   extensions:
       DoAndIfThenElse
+      MultiParamTypeClasses
 
   -- Other library packages from which modules are imported.
   build-depends:
