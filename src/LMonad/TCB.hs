@@ -23,6 +23,7 @@ module LMonad.TCB (
 
 import Control.Applicative
 import Control.Monad
+import Control.Monad.IO.Class
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.State
 import Prelude
@@ -66,6 +67,8 @@ instance (Label l, LMonad m, Functor m) => Applicative (LMonadT l m) where
     pure = return
     (<*>) = ap
     
+instance (Label l, LMonad m, MonadIO m) => MonadIO (LMonadT l m) where
+    liftIO ma = lLift $ liftIO ma
 
 -- Runs the LMonad with bottom as the initial label and clearance. 
 runLMonad :: (Label l, LMonad m) => LMonadT l m a -> m a
