@@ -21,6 +21,7 @@ module LMonad.TCB (
       , ToLabel(..)
     ) where
 
+import Control.Applicative
 import Control.Monad
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.State
@@ -57,6 +58,14 @@ instance (Label l, LMonad m) => Monad (LMonadT l m) where
         -- mb
     return = LMonadT . return
     fail _ = LMonadT $ lift lFail
+
+instance (Label l, LMonad m, Functor m) => Functor (LMonadT l m) where
+    fmap f (LMonadT ma) = LMonadT $ fmap f ma
+
+instance (Label l, LMonad m, Functor m) => Applicative (LMonadT l m) where
+    pure = return
+    (<*>) = ap
+    
 
 -- Runs the LMonad with bottom as the initial label and clearance. 
 runLMonad :: (Label l, LMonad m) => LMonadT l m a -> m a
