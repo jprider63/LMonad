@@ -8,6 +8,8 @@ module LMonad.TCB (
       , lLift
       , getCurrentLabel
       , getClearance
+      , lubCurrentLabel
+      , canSetLabel
       , setLabel
       , taintLabel
       , setClearance
@@ -95,16 +97,28 @@ getCurrentLabel = LMonadT $ do
     (LState label _) <- get
     return label
 
+lubCurrentLabel :: (Label l, LMonad m) => l -> LMonadT l m l
+lubCurrentLabel l = do
+    getCurrentLabel >>= (return . (lub l))
+
 getClearance :: (Label l, LMonad m) => LMonadT l m l
 getClearance = LMonadT $ do
     (LState _ clearance) <- get
     return clearance
 
+canAlloc :: (Label l, LMonad m) => l -> StateT (LState l) m Bool
+canAlloc l = do
+    (LState label clearance) <- get
+    return $ canFlowTo label l && canFlowTo l clearance
+
 guardAlloc :: (Label l, LMonad m) => l -> StateT (LState l) m ()
 guardAlloc l = do
-    (LState label clearance) <- get
-    unless (canFlowTo label l && canFlowTo l clearance) $ 
+    guard <- canAlloc l
+    unless guard $ 
         lift lFail
+
+canSetLabel :: (Label l, LMonad m) => l -> LMonadT l m Bool
+canSetLabel = LMonadT . canAlloc
 
 setLabel :: (Label l, LMonad m) => l -> LMonadT l m ()
 setLabel l = LMonadT $ do
@@ -113,10 +127,12 @@ setLabel l = LMonadT $ do
     put $ LState l clearance
 
 taintLabel :: (Label l, LMonad m) => l -> LMonadT l m ()
-taintLabel l1 = do
-    l2 <- getCurrentLabel
-    let l = lub l1 l2
-    setLabel l
+taintLabel l = do
+    lubCurrentLabel l >>= setLabel
+
+-- canTaintLabel :: (Label l, LMonad m) => l -> LMonadT l m Bool
+-- canTaintLabel l = do
+--     lubCurrentLabel l >>= (LMonadT . canAlloc)
 
 setClearance :: (Label l, LMonad m) => l -> LMonadT l m ()
 setClearance c = LMonadT $ do

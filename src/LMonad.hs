@@ -10,6 +10,8 @@ import LMonad.TCB as LMonad (
       , lLift
       , getCurrentLabel
       , getClearance
+      , lubCurrentLabel
+      , canSetLabel
       , setLabel
       , taintLabel
       , setClearance
