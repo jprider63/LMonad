@@ -1,3 +1,5 @@
+{-# LANGUAGE FlexibleContexts, TypeFamilies #-}
+
 -- Only trusted code should import this module. 
 
 module LMonad.TCB (
@@ -25,8 +27,10 @@ module LMonad.TCB (
 
 import Control.Applicative
 import Control.Monad
+import Control.Monad.Base
 import Control.Monad.IO.Class
 import Control.Monad.Trans.Class
+import Control.Monad.Trans.Control
 import Control.Monad.Trans.State
 import Prelude
 
@@ -71,6 +75,16 @@ instance (Label l, LMonad m, Functor m) => Applicative (LMonadT l m) where
     
 instance (Label l, LMonad m, MonadIO m) => MonadIO (LMonadT l m) where
     liftIO ma = lLift $ liftIO ma
+
+instance (LMonad m, Label l, Functor m, MonadBase IO m) => MonadBase IO (LMonadT l m) where
+    liftBase = lLift . liftBase
+
+-- TODO: This allows replay attacks. Ie, malicious code could reset the current label or clearance to a previous value. 
+--     This is needed for Database.Persist.runPool
+instance (LMonad m, Label l, MonadBaseControl IO m) => MonadBaseControl IO (LMonadT l m) where
+    newtype StM (LMonadT l m) a = StMT {unStMT :: StM (StateT (LState l) m) a}
+    liftBaseWith f = LMonadT $ liftBaseWith $ \run -> f $ liftM StMT . run . lMonadTState
+    restoreM = LMonadT . restoreM . unStMT
 
 -- Runs the LMonad with bottom as the initial label and clearance. 
 runLMonad :: (Label l, LMonad m) => LMonadT l m a -> m a

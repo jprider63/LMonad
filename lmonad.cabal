@@ -68,5 +68,7 @@ library
   build-depends:
       base
     , containers
+    , monad-control
     , transformers
+    , transformers-base
   
