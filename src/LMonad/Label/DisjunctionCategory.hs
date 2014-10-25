@@ -25,6 +25,11 @@ data Ord p => DCLabel p = DCLabel {
 
     deriving Show
 
+dcSingleton :: Ord p => p -> DCLabel p
+dcSingleton p = 
+    let conj = Set.singleton (Set.singleton p) in
+    DCLabel conj conj
+
 -- | Convenience function to convert a principal to confidentiality DCLabel.
 dcConfidentialitySingleton :: Ord p => p -> DCLabel p
 dcConfidentialitySingleton p = DCLabel (Set.singleton (Set.singleton p)) Set.empty
@@ -96,7 +101,5 @@ instance Ord p => Label (DCLabel p) where
         c2 `implies` c1 && i1 `implies` i2
 
     -- Bottom
-    -- TODO: Is this correct????
-    --  Maybe Set.singleton (Set.empty) ?????
-    bottom = DCLabel Set.empty Set.empty
+    bottom = DCLabel Set.empty $ Set.singleton Set.empty
 
