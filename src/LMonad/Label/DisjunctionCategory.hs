@@ -23,6 +23,8 @@ data Ord p => DCLabel p = DCLabel {
       , dcIntegrity :: Conjunction p
     }
 
+    deriving Show
+
 -- | Convenience function to convert a principal to confidentiality DCLabel.
 dcConfidentialitySingleton :: Ord p => p -> DCLabel p
 dcConfidentialitySingleton p = DCLabel (Set.singleton (Set.singleton p)) Set.empty
