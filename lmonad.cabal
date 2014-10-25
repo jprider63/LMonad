@@ -72,3 +72,24 @@ library
     , transformers
     , transformers-base
   
+Test-Suite test-lmonad
+  type:
+      exitcode-stdio-1.0
+  hs-source-dirs:
+      test
+    , src
+  main-is:
+      Main.hs
+  build-depends:
+      base
+    , containers
+    , HUnit
+    , lmonad
+    , monad-control
+    , transformers
+    , transformers-base
+  extensions:
+      DoAndIfThenElse
+      MultiParamTypeClasses
+  ghc-options:
+      -Wall

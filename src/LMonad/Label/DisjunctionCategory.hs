@@ -23,7 +23,7 @@ data Ord p => DCLabel p = DCLabel {
       , dcIntegrity :: Conjunction p
     }
 
-    deriving Show
+    deriving (Eq, Show)
 
 dcSingleton :: Ord p => p -> DCLabel p
 dcSingleton p = 
@@ -32,7 +32,7 @@ dcSingleton p =
 
 -- | Convenience function to convert a principal to confidentiality DCLabel.
 dcConfidentialitySingleton :: Ord p => p -> DCLabel p
-dcConfidentialitySingleton p = DCLabel (Set.singleton (Set.singleton p)) Set.empty
+dcConfidentialitySingleton p = DCLabel (Set.singleton (Set.singleton p)) $ Set.singleton Set.empty
 
 -- | Convenience function to convert a principal to integrity DCLabel.
 dcIntegritySingleton :: Ord p => p -> DCLabel p
