@@ -54,17 +54,8 @@ subset = Set.isSubsetOf
 -- | Computes logical implies. Assumes CNF. O(n * m * (n' + m'))
 implies :: Ord p => Conjunction p -> Conjunction p -> Bool
 implies a b = 
-    -- Forall b
-    forall (\elB -> exists (subset elB) a) b
-    --forall (\elB -> exists (\elA -> subset elB elA)) b
-
---    Set.foldl' (\acc elB ->
---        let exists = Set.foldl' (\acc elA ->
---                (elA ?? elB) || acc
---              ) False a
---        in
---        exists && acc
---      ) True b
+    -- forall b. exists a. a is a subset of b
+    forall (\elB -> exists (\elA -> subset elA elB) a) b
 
 -- O(n * (n' + m))
 conjunctionInsertDisjunction :: Ord p => Conjunction p -> Disjunction p -> Conjunction p

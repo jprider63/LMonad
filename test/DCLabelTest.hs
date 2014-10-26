@@ -60,10 +60,10 @@ canFlowToTest = TestCase $ do
     assertBool "bottom `canFlowTo` l'" $ b `canFlowTo` l'
     assertBool "not (l' `canFlowTo` bottom)" $ not $ l' `canFlowTo` b
 
-    assertBool "l1 `canFlowTo l3" $ not $ l1 `canFlowTo` l3
+    assertBool "l1 `canFlowTo l3" $ l1 `canFlowTo` l3
     assertBool "not (l3 `canFlowTo l1)" $ not $ l3 `canFlowTo` l1
 
-    assertBool "l2 `canFlowTo l3" $ not $ l1 `canFlowTo` l3
+    assertBool "l2 `canFlowTo l3" $ l1 `canFlowTo` l3
     assertBool "not (l2 `canFlowTo l1)" $ not $ l3 `canFlowTo` l1
 
 tests :: Test
