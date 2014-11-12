@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleContexts, TypeFamilies #-}
+{-# LANGUAGE FlexibleInstances, FlexibleContexts, TypeFamilies #-}
 
 -- Only trusted code should import this module. 
 
@@ -33,6 +33,7 @@ import Control.Monad.IO.Class
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.Control
 import Control.Monad.Trans.State
+import Data.Monoid
 import Prelude
 
 import LMonad.Label as Export
@@ -87,6 +88,10 @@ instance (LMonad m, Label l, MonadBaseControl IO m) => MonadBaseControl IO (LMon
     liftBaseWith f = LMonadT $ liftBaseWith $ \run -> f $ liftM StMT . run . lMonadTState
     restoreM = LMonadT . restoreM . unStMT
 
+instance (LMonad m, Label l, Monoid (m a)) => Monoid (LMonadT l m a) where
+    mempty = lLift mempty
+    mappend a b = a >> b
+    
 -- Runs the LMonad with bottom as the initial label and clearance. 
 runLMonad :: (Label l, LMonad m) => LMonadT l m a -> m a
 runLMonad (LMonadT lm) = 
