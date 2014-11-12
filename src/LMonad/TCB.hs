@@ -90,7 +90,11 @@ instance (LMonad m, Label l, MonadBaseControl IO m) => MonadBaseControl IO (LMon
 
 instance (LMonad m, Label l, Monoid (m a)) => Monoid (LMonadT l m a) where
     mempty = lLift mempty
-    mappend a b = a >> b
+    mappend a b = a >> b 
+--    do
+--        a' <- a 
+--        b' <- b
+--        return $ mappend a b
     
 -- Runs the LMonad with bottom as the initial label and clearance. 
 runLMonad :: (Label l, LMonad m) => LMonadT l m a -> m a
