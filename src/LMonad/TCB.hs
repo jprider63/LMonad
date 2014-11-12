@@ -23,6 +23,7 @@ module LMonad.TCB (
       , labelOf
       , toLabeledTCB
       , ToLabel(..)
+      , swapBase
     ) where
 
 import Control.Applicative
@@ -200,3 +201,9 @@ toLabeledTCB l ma = do
     setClearance oldClearance
     return la
 
+swapBase :: (Label l, LMonad m, LMonad n) => (m (a,LState l) -> n (b,LState l)) -> LMonadT l m a -> LMonadT l n b
+swapBase f (LMonadT m) = LMonadT $ do
+    prev <- get
+    ( res, new) <- lift $ f $ (runStateT m) prev
+    put new
+    return res

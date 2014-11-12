@@ -20,6 +20,7 @@ import LMonad.TCB as LMonad (
       , unlabel
       , labelOf
       , ToLabel(..)
+      , swapBase
     )
 
 -- most code should import LMonad
