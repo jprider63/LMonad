@@ -29,6 +29,7 @@ module LMonad.TCB (
 import Control.Applicative
 import Control.Monad
 import Control.Monad.Base
+import Control.Monad.Catch
 import Control.Monad.IO.Class
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.Control
@@ -80,6 +81,9 @@ instance (Label l, LMonad m, MonadIO m) => MonadIO (LMonadT l m) where
 
 instance (LMonad m, Label l, Functor m, MonadBase IO m) => MonadBase IO (LMonadT l m) where
     liftBase = lLift . liftBase
+
+instance (Label l, LMonad m, MonadThrow m) => MonadThrow (LMonadT l m) where
+    throwM = lLift . throwM
 
 -- TODO: This allows replay attacks. Ie, malicious code could reset the current label or clearance to a previous value. 
 --     This is needed for Database.Persist.runPool

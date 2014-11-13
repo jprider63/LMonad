@@ -68,6 +68,7 @@ library
   build-depends:
       base
     , containers
+    , exceptions
     , monad-control
     , transformers
     , transformers-base
@@ -83,6 +84,7 @@ Test-Suite test-lmonad
   build-depends:
       base
     , containers
+    , exceptions
     , HUnit
     , lmonad
     , monad-control
