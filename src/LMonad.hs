@@ -18,6 +18,7 @@ import LMonad.TCB as LMonad (
       , Labeled
       , label
       , unlabel
+      , canUnlabel
       , labelOf
       , ToLabel(..)
       , swapBase

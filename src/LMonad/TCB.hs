@@ -20,6 +20,7 @@ module LMonad.TCB (
       , Labeled
       , label
       , unlabel
+      , canUnlabel
       , labelOf
       , toLabeledTCB
       , ToLabel(..)
@@ -197,6 +198,11 @@ unlabel :: (Label l, LMonad m) => Labeled l a -> LMonadT l m a
 unlabel l = do
     setLabel $ labelOf l
     return $ labeledValue l
+
+canUnlabel :: (Label l, LMonad m) => Labeled l a -> LMonadT l m Bool
+canUnlabel l = do
+    clearance <- getClearance
+    return $ canFlowTo (labelOf l) clearance
 
 labelOf :: Label l => Labeled l a -> l
 labelOf = labeledLabel
