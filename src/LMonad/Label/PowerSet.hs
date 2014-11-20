@@ -13,16 +13,19 @@ data Ord p => PSLabel p = PSLabel {
     }
         deriving Show
 
+-- | Convenience function to convert a principal to confidentiality and integrity PSLabel.
 psSingleton :: Ord p => p -> PSLabel p
 psSingleton p = 
     let p' = Set.singleton p in
     PSLabel p' p'
 
+-- | Convenience function to convert a principal to confidentiality PSLabel.
 psConfidentialitySingleton :: Ord p => p -> PSLabel p
 psConfidentialitySingleton p = 
     let p' = Set.singleton p in
     PSLabel p' Set.empty
 
+-- | Convenience function to convert a principal to integrity PSLabel.
 psIntegritySingleton :: Ord p => p -> PSLabel p
 psIntegritySingleton p =
     let p' = Set.singleton p in
