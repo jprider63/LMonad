@@ -25,6 +25,7 @@ data Ord p => DCLabel p = DCLabel {
 
     deriving (Eq, Show)
 
+-- | Convenience function to convert a principal to confidentiality and integrity DCLabel.
 dcSingleton :: Ord p => p -> DCLabel p
 dcSingleton p = 
     let conj = Set.singleton (Set.singleton p) in

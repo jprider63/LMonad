@@ -13,6 +13,21 @@ data Ord p => PSLabel p = PSLabel {
     }
         deriving Show
 
+psSingleton :: Ord p => p -> PSLabel p
+psSingleton p = 
+    let p' = Set.singleton p in
+    PSLabel p' p'
+
+psConfidentialitySingleton :: Ord p => p -> PSLabel p
+psConfidentialitySingleton p = 
+    let p' = Set.singleton p in
+    PSLabel p' Set.empty
+
+psIntegritySingleton :: Ord p => p -> PSLabel p
+psIntegritySingleton p =
+    let p' = Set.singleton p in
+    PSLabel Set.empty p'
+
 instance Ord p => Label (PSLabel p) where
     -- Meet
     glb (PSLabel c1 i1) (PSLabel c2 i2) =   
