@@ -19,10 +19,10 @@ version:             0.1.0.0
 -- description:         
 
 -- The license under which the package is released.
--- license:             
+license:             GPL
 
 -- The file containing the license text.
--- TODO: license-file:        LICENSE XXX
+license-file:        LICENSE
 
 -- The package author(s).
 author:              James Parker
