@@ -1,8 +1,6 @@
--- | Reference: 
---  http://www.scs.stanford.edu/~deian/pubs/stefan:2011:dclabels.pdf
---  http://hackage.haskell.org/package/lio-0.11.5.0/docs/src/LIO-DCLabel.html
+-- Some work derived from [LIO](http://hackage.haskell.org/package/lio-eci11), copyrighted under GPL.
 --
--- TODO: Some licensing stuff? XXX
+-- Modifications by James Parker in 2014.
 
 module LMonad.Label.DisjunctionCategory where
 

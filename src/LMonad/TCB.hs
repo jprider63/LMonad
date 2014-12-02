@@ -1,3 +1,7 @@
+-- Some work derived from [LIO](http://hackage.haskell.org/package/lio-eci11), copyrighted under GPL.
+--
+-- Modifications by James Parker in 2014.
+
 {-# LANGUAGE FlexibleInstances, FlexibleContexts, TypeFamilies #-}
 
 -- Only trusted code should import this module. 
