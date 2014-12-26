@@ -11,3 +11,5 @@ Usage
 Most code should import the `LMonad` module. 
 Trusted code can import the `LMonad.TCB` module to perform trusted operations. 
 The `LMonadT` monad transformer is used to enable IFC for any monad. 
+
+Use the [LMonad-Yesod](https://github.com/jprider63/LMonad-yesod) library to integrate LMonad into your Yesod application. 
