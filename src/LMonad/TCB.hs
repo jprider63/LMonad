@@ -90,10 +90,13 @@ instance (LMonad m, Label l, Functor m, MonadBase IO m) => MonadBase IO (LMonadT
 instance (Label l, LMonad m, MonadThrow m) => MonadThrow (LMonadT l m) where
     throwM = lLift . throwM
 
+newtype StMT l m a = StMT {unStMT :: StM (StateT (LState l) m) a}
+
 -- TODO: This allows replay attacks. Ie, malicious code could reset the current label or clearance to a previous value. 
 --     This is needed for Database.Persist.runPool
 instance (LMonad m, Label l, MonadBaseControl IO m) => MonadBaseControl IO (LMonadT l m) where
-    newtype StM (LMonadT l m) a = StMT {unStMT :: StM (StateT (LState l) m) a}
+    -- newtype StM (LMonadT l m) a = StMT {unStMT :: StM (StateT (LState l) m) a}
+    type StM (LMonadT l m) a = StMT l m a
     liftBaseWith f = LMonadT $ liftBaseWith $ \run -> f $ liftM StMT . run . lMonadTState
     restoreM = LMonadT . restoreM . unStMT
 

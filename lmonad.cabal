@@ -69,7 +69,7 @@ library
       base
     , containers
     , exceptions
-    , monad-control
+    , monad-control >= 1.0.0.0
     , transformers
     , transformers-base
   
