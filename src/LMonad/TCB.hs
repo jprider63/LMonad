@@ -157,14 +157,25 @@ canSetLabel :: (Label l, LMonad m) => l -> LMonadT l m Bool
 canSetLabel = LMonadT . canAlloc
 
 setLabel :: (Label l, LMonad m) => l -> LMonadT l m ()
-setLabel l = LMonadT $ do
-    guardAlloc l
+setLabel l = do
+    LMonadT $ guardAlloc l
+    setLabelTCB l
+
+setLabelTCB :: (Label l, LMonad m) => l -> LMonadT l m ()
+setLabelTCB l = LMonadT $ do
     (LState _ clearance) <- get
     put $ LState l clearance
 
 taintLabel :: (Label l, LMonad m) => l -> LMonadT l m ()
 taintLabel l = do
-    lubCurrentLabel l >>= setLabel
+    lM' <- taintHelper l
+    case lM' of
+        Nothing ->
+            LMonadT $ lift lFail
+        Just l' -> do
+            setLabelTCB l'
+
+    -- lubCurrentLabel l >>= setLabel
 
 -- canTaintLabel :: (Label l, LMonad m) => l -> LMonadT l m Bool
 -- canTaintLabel l = do
@@ -201,15 +212,31 @@ label l a = LMonadT $ do
     guardAlloc l
     return $ Labeled l a
 
+-- | Join the given label with the current label. 
+-- Return the result if it can flow to the clearance.
+taintHelper :: (Label l, LMonad m) => l -> LMonadT l m (Maybe l)
+taintHelper l = do
+    (LState label clearance) <- LMonadT get
+    let l' = label `lub` l
+    if l' `canFlowTo` clearance then
+        return $ Just l'
+    else
+        return Nothing
+        
 unlabel :: (Label l, LMonad m) => Labeled l a -> LMonadT l m a
 unlabel l = do
-    setLabel $ labelOf l
+    taintLabel $ labelOf l
     return $ labeledValue l
+
+    -- setLabel $ labelOf l
+    -- return $ labeledValue l
 
 canUnlabel :: (Label l, LMonad m) => Labeled l a -> LMonadT l m Bool
 canUnlabel l = do
-    clearance <- getClearance
-    return $ canFlowTo (labelOf l) clearance
+    fmap (maybe False $ const True) $ taintHelper $ labelOf l
+
+    -- clearance <- getClearance
+    -- return $ canFlowTo (labelOf l) clearance
 
 labelOf :: Label l => Labeled l a -> l
 labelOf = labeledLabel

@@ -63,6 +63,7 @@ library
   extensions:
       DoAndIfThenElse
       MultiParamTypeClasses
+      DatatypeContexts
 
   -- Other library packages from which modules are imported.
   build-depends:
