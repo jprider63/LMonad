@@ -9,7 +9,7 @@
 module LMonad.TCB (
         module Export
       , LMonad (..)
-      , LMonadT
+      , LMonadT(..)
       , runLMonad
       , lLift
       , getCurrentLabel
