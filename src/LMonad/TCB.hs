@@ -21,7 +21,7 @@ module LMonad.TCB (
       , setClearance
       , raiseClearanceTCB
       , lowerLabelTCB
-      , Labeled
+      , Labeled(..)
       , label
       , unlabel
       , canUnlabel
