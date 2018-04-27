@@ -2,7 +2,15 @@
 --
 -- Modifications by James Parker in 2014.
 
-module LMonad.Label.DisjunctionCategory where
+module LMonad.Label.DisjunctionCategory (
+      Disjunction
+    , Conjunction
+    , DCLabel(..)
+    , dcPublic
+    , dcSingleton
+    , dcConfidentialitySingleton
+    , dcIntegritySingleton
+    ) where
 
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -22,6 +30,9 @@ data Ord p => DCLabel p = DCLabel {
     }
 
     deriving (Eq, Show)
+
+dcPublic :: Ord p => DCLabel p
+dcPublic = DCLabel Set.empty Set.empty
 
 -- | Convenience function to convert a principal to confidentiality and integrity DCLabel.
 dcSingleton :: Ord p => p -> DCLabel p
