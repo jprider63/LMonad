@@ -20,13 +20,13 @@ module LMonad.TCB (
       , taintLabel
       , setClearance
       , raiseClearanceTCB
-      , lowerLabelTCB
+      -- , lowerLabelTCB
       , Labeled(..)
       , label
       , unlabel
       , canUnlabel
       , labelOf
-      , toLabeledTCB
+      , toLabeled
       , ToLabel(..)
       , swapBase
     ) where
@@ -181,11 +181,15 @@ taintLabel l = do
 -- canTaintLabel l = do
 --     lubCurrentLabel l >>= (LMonadT . canAlloc)
 
+setClearanceTCB :: (Label l, LMonad m) => l -> StateT (LState l) m ()
+setClearanceTCB c = do
+    (LState label _) <- get
+    put $ LState label c
+    
 setClearance :: (Label l, LMonad m) => l -> LMonadT l m ()
 setClearance c = LMonadT $ do
     guardAlloc c
-    (LState label _) <- get
-    put $ LState label c
+    setClearanceTCB c
 
 -- TODO: Does this diverge from LIO's formalism?
 -- Sets the current clearance to the join of the old clearance and the given clearance.
@@ -196,10 +200,15 @@ raiseClearanceTCB c = LMonadT $ do
 
 -- TODO: I think this does diverge from LIO
 -- Sets the current label to the meet of the old label and the given label.
-lowerLabelTCB :: (Label l, LMonad m) => l -> LMonadT l m ()
-lowerLabelTCB l = LMonadT $ do
-    (LState label clearance) <- get
-    put $ LState (glb label l) clearance
+-- lowerLabelTCB :: (Label l, LMonad m) => l -> LMonadT l m ()
+-- lowerLabelTCB l = LMonadT $ do
+--     (LState label clearance) <- get
+--     put $ LState (glb label l) clearance
+
+setCurrentLabelTCB :: (Label l, LMonad m) => l -> LMonadT l m ()
+setCurrentLabelTCB l = do
+    c <- getClearance
+    LMonadT $ put $ LState l c
 
 -- Labeled values.
 data Label l => Labeled l a = Labeled {
@@ -241,18 +250,22 @@ canUnlabel l = do
 labelOf :: Label l => Labeled l a -> l
 labelOf = labeledLabel
 
--- TODO: I'm pretty sure this also differs from their semantics
--- Should this also be TCB? Could potentially leak via side channel since lifting might be allowed. 
-toLabeledTCB :: (Label l, LMonad m) => l -> LMonadT l m a -> LMonadT l m (Labeled l a)
-toLabeledTCB l ma = do
+toLabeled :: (Label l, LMonad m) => l -> LMonadT l m a -> LMonadT l m (Labeled l a)
+toLabeled l ma = do
+    LMonadT $ guardAlloc l
+
     oldLabel <- getCurrentLabel
     oldClearance <- getClearance
-    raiseClearanceTCB l
+
     a <- ma
-    la <- label l a
-    lowerLabelTCB oldLabel
-    setClearance oldClearance
-    return la
+
+    newLabel <- getCurrentLabel
+    setCurrentLabelTCB oldLabel
+    LMonadT $ setClearanceTCB oldClearance
+    if newLabel `canFlowTo` l then
+        return $ Labeled l a
+    else
+        LMonadT $ lift lFail
 
 swapBase :: (Label l, LMonad m, LMonad n) => (m (a,LState l) -> n (b,LState l)) -> LMonadT l m a -> LMonadT l n b
 swapBase f (LMonadT m) = LMonadT $ do
