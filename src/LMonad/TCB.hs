@@ -20,6 +20,8 @@ module LMonad.TCB (
       , taintLabel
       , setClearance
       , raiseClearanceTCB
+      , declassifyTCB
+      , declassifyNoChecksTCB
       -- , lowerLabelTCB
       , Labeled(..)
       , label
@@ -267,6 +269,20 @@ toLabeled l ma = do
     else
         LMonadT $ lift lFail
 
+-- | Declassify a labeled value if the label joined with the current label can flow to the clearance. Does not raise the current label. 
+-- Allows users to declassify the value if they have permission to read the value. 
+declassifyTCB :: (Label l, LMonad m) => Labeled l a -> LMonadT l m a
+declassifyTCB l@(Labeled _ v) = do
+    canRead <- canUnlabel l
+    if canRead then
+        return v
+    else
+        LMonadT $ lift lFail
+
+-- | Declassify a labeled value without any checks. 
+declassifyNoChecksTCB :: (Label l, LMonad m) => Labeled l a -> LMonadT l m a
+declassifyNoChecksTCB (Labeled _ v) = return v
+        
 swapBase :: (Label l, LMonad m, LMonad n) => (m (a,LState l) -> n (b,LState l)) -> LMonadT l m a -> LMonadT l n b
 swapBase f (LMonadT m) = LMonadT $ do
     prev <- get
