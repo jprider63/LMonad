@@ -240,7 +240,7 @@ taintHelper l = do
 unlabel :: (Label l, LMonad m) => Labeled l a -> LMonadT l m a
 unlabel l = do
     taintLabel $ labelOf l
-    return $ labeledValue l
+    return $! labeledValue l
 
     -- setLabel $ labelOf l
     -- return $ labeledValue l
