@@ -55,8 +55,8 @@ class Monad m => LMonad m where
     -- lLift???
 
 data Label l => LState l = LState {
-        lStateLabel :: !l
-      , lStateClearance :: !l
+        _lStateLabel :: !l
+      , _lStateClearance :: !l
     }
 
 -- | Type class to convert a given type to a given label.

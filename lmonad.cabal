@@ -58,12 +58,11 @@ library
       src
   
   ghc-options:
-      -Wall -fno-warn-name-shadowing -O2
+      -Wall -Werror -fno-warn-name-shadowing -O2
 
   extensions:
       DoAndIfThenElse
       MultiParamTypeClasses
-      DatatypeContexts
 
   -- Other library packages from which modules are imported.
   build-depends:
