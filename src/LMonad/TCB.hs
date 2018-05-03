@@ -34,8 +34,11 @@ module LMonad.TCB (
     ) where
 
 import Control.Applicative
+import Control.Exception.Base
+import Control.Exception.Enclosed
 import Control.Monad
 import Control.Monad.Base
+import Control.DeepSeq (NFData)
 import Control.Monad.Catch
 import Control.Monad.IO.Class
 import Control.Monad.Trans.Class
@@ -252,14 +255,14 @@ canUnlabel l = do
 labelOf :: Label l => Labeled l a -> l
 labelOf = labeledLabel
 
-toLabeled :: (Label l, LMonad m) => l -> LMonadT l m a -> LMonadT l m (Labeled l a)
+toLabeled :: (Label l, LMonad m, NFData a, MonadBaseControl IO m) => l -> LMonadT l m a -> LMonadT l m (Labeled l a)
 toLabeled l ma = do
     LMonadT $ guardAlloc l
 
     oldLabel <- getCurrentLabel
     oldClearance <- getClearance
 
-    a <- ma
+    a <- catchAnyDeep ma $ return . throw
 
     newLabel <- getCurrentLabel
     setCurrentLabelTCB oldLabel

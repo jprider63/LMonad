@@ -69,6 +69,8 @@ library
   build-depends:
       base
     , containers
+    , deepseq
+    , enclosed-exceptions
     , exceptions
     , monad-control >= 1.0.0.0
     , transformers
