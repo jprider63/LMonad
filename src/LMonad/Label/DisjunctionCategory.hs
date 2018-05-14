@@ -104,3 +104,10 @@ instance Ord p => Label (DCLabel p) where
     -- Bottom
     bottom = DCLabel Set.empty $ Set.singleton Set.empty
 
+instance Ord p => ToLabel Lattice (DCLabel p) where
+    toConfidentialityLabel Top = DCLabel (Set.singleton Set.empty) Set.empty
+    toConfidentialityLabel Bottom = bottom
+
+    toIntegrityLabel Top = dcPublic
+    toIntegrityLabel Bottom = bottom
+

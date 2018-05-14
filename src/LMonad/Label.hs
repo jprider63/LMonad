@@ -7,5 +7,7 @@ class Label l where
     lub :: l -> l -> l
     -- Meet
     glb :: l -> l -> l
+
     canFlowTo :: l -> l -> Bool
+
     bottom :: l

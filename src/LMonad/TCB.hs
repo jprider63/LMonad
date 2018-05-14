@@ -11,6 +11,7 @@ module LMonad.TCB (
       , LMonad (..)
       , LMonadT(..)
       , runLMonad
+      , runLMonadWith
       , lLift
       , getCurrentLabel
       , getClearance
@@ -24,6 +25,7 @@ module LMonad.TCB (
       , declassifyNoChecksTCB
       -- , lowerLabelTCB
       , Labeled(..)
+      , Lattice(..)
       , label
       , unlabel
       , canUnlabel
@@ -53,6 +55,8 @@ class Monad m => LMonad m where
     lFail :: m a
     lAllowLift :: m Bool
     -- lLift???
+
+data Lattice = Top | Bottom
 
 data Label l => LState l = LState {
         _lStateLabel :: !l
@@ -113,6 +117,11 @@ instance (LMonad m, Label l, Monoid (m a)) => Monoid (LMonadT l m a) where
 --        b' <- b
 --        return $ mappend a b
     
+-- Runs the LMonad with the given current label and clearance.
+runLMonadWith :: (Label l, LMonad m) => LMonadT l m a -> l -> l -> m a
+runLMonadWith (LMonadT lm) label clearance = 
+    evalStateT lm $ LState label clearance
+
 -- Runs the LMonad with bottom as the initial label and clearance. 
 runLMonad :: (Label l, LMonad m) => LMonadT l m a -> m a
 runLMonad (LMonadT lm) = 

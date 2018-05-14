@@ -21,6 +21,7 @@ import LMonad.TCB as LMonad (
       , canUnlabel
       , labelOf
       , ToLabel(..)
+      , Lattice(..)
       , swapBase
     )
 
