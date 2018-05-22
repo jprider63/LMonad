@@ -27,6 +27,7 @@ module LMonad.TCB (
       , Labeled(..)
       , Lattice(..)
       , label
+      , LState(..)
       , unlabel
       , canUnlabel
       , labelOf
