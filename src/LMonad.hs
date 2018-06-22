@@ -14,6 +14,7 @@ import LMonad.TCB as LMonad (
       , canSetLabel
       , setLabel
       , taintLabel
+      , taintLabels
       , setClearance
       , Labeled
       , label
