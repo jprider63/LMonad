@@ -19,6 +19,7 @@ module LMonad.TCB (
       , canSetLabel
       , setLabel
       , taintLabel
+      , taintLabels
       , setClearance
       , raiseClearanceTCB
       , declassifyTCB
@@ -180,6 +181,12 @@ setLabelTCB :: (Label l, LMonad m) => l -> LMonadT l m ()
 setLabelTCB l = LMonadT $ do
     (LState _ clearance) <- get
     put $ LState l clearance
+
+taintLabels :: (Label l, LMonad m) => [l] -> LMonadT l m ()
+taintLabels [] = return ()
+taintLabels (h:t) = do
+    let l' = foldr (\l acc -> l `lub` acc) h t
+    taintLabel l'
 
 taintLabel :: (Label l, LMonad m) => l -> LMonadT l m ()
 taintLabel l = do
