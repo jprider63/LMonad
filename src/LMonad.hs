@@ -7,6 +7,7 @@ import LMonad.TCB as LMonad (
       , LMonad (..)
       , LMonadT
       , runLMonad
+      , runLMonadWith
       , lLift
       , getCurrentLabel
       , getClearance
