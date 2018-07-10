@@ -24,7 +24,7 @@ module LMonad.TCB (
       , raiseClearanceTCB
       , declassifyTCB
       , declassifyNoChecksTCB
-      -- , lowerLabelTCB
+      , lowerLabelTCB
       , Labeled(..)
       , Lattice(..)
       , label
@@ -213,19 +213,17 @@ setClearance c = LMonadT $ do
     guardAlloc c
     setClearanceTCB c
 
--- TODO: Does this diverge from LIO's formalism?
 -- Sets the current clearance to the join of the old clearance and the given clearance.
 raiseClearanceTCB :: (Label l, LMonad m) => l -> LMonadT l m ()
 raiseClearanceTCB c = LMonadT $ do
     (LState label clearance) <- get
     put $ LState label $ lub clearance c
 
--- TODO: I think this does diverge from LIO
 -- Sets the current label to the meet of the old label and the given label.
--- lowerLabelTCB :: (Label l, LMonad m) => l -> LMonadT l m ()
--- lowerLabelTCB l = LMonadT $ do
---     (LState label clearance) <- get
---     put $ LState (glb label l) clearance
+lowerLabelTCB :: (Label l, LMonad m) => l -> LMonadT l m ()
+lowerLabelTCB l = LMonadT $ do
+    (LState label clearance) <- get
+    put $ LState (glb label l) clearance
 
 setCurrentLabelTCB :: (Label l, LMonad m) => l -> LMonadT l m ()
 setCurrentLabelTCB l = do
