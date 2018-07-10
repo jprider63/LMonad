@@ -120,8 +120,8 @@ instance (LMonad m, Label l, Monoid (m a)) => Monoid (LMonadT l m a) where
 --        return $ mappend a b
     
 -- Runs the LMonad with the given current label and clearance.
-runLMonadWith :: (Label l, LMonad m) => LMonadT l m a -> l -> l -> m a
-runLMonadWith (LMonadT lm) label clearance = 
+runLMonadWith :: (Label l, LMonad m) => l -> l -> LMonadT l m a -> m a
+runLMonadWith label clearance (LMonadT lm) = 
     evalStateT lm $ LState label clearance
 
 -- Runs the LMonad with bottom as the initial label and clearance. 
