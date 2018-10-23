@@ -12,7 +12,7 @@ module LMonad.TCB (
       , LMonadT(..)
       , runLMonad
       , runLMonadWith
-      , lLift
+      -- , lLift
       , getCurrentLabel
       , getClearance
       , lubCurrentLabel
@@ -44,18 +44,18 @@ import Control.Monad
 import Control.Monad.Base
 import Control.DeepSeq (NFData)
 import Control.Monad.Catch
-import Control.Monad.IO.Class
+-- import Control.Monad.IO.Class
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.Control
 import Control.Monad.Trans.State
-import Data.Monoid
+-- import Data.Monoid
 import Prelude
 
 import LMonad.Label as Export
 
 class Monad m => LMonad m where
     lFail :: m a
-    lAllowLift :: m Bool
+    -- lAllowLift :: m Bool
     -- lLift???
 
 data Lattice = Top | Bottom
@@ -92,14 +92,15 @@ instance (Label l, LMonad m, Functor m) => Applicative (LMonadT l m) where
     pure = return
     (<*>) = ap
     
-instance (Label l, LMonad m, MonadIO m) => MonadIO (LMonadT l m) where
-    liftIO ma = lLift $ liftIO ma
+-- JP: Move to lmonad-yesod?
+-- instance (Label l, LMonad m, MonadIO m) => MonadIO (LMonadT l m) where
+--     liftIO ma = lLift $ liftIO ma
 
 instance (LMonad m, Label l, Functor m, MonadBase IO m) => MonadBase IO (LMonadT l m) where
-    liftBase = lLift . liftBase
+    liftBase = liftTCB . liftBase
 
 instance (Label l, LMonad m, MonadThrow m) => MonadThrow (LMonadT l m) where
-    throwM = lLift . throwM
+    throwM = liftTCB . throwM
 
 newtype StMT l m a = StMT {unStMT :: StM (StateT (LState l) m) a}
 
@@ -111,9 +112,10 @@ instance (LMonad m, Label l, MonadBaseControl IO m) => MonadBaseControl IO (LMon
     liftBaseWith f = LMonadT $ liftBaseWith $ \run -> f $ liftM StMT . run . lMonadTState
     restoreM = LMonadT . restoreM . unStMT
 
-instance (LMonad m, Label l, Monoid (m a)) => Monoid (LMonadT l m a) where
-    mempty = lLift mempty
-    mappend a b = a >> b 
+-- instance (LMonad m, Label l, Monoid (m a)) => Monoid (LMonadT l m a) where
+--     mempty = lLift mempty
+--     mappend a b = a >> b 
+
 --    do
 --        a' <- a 
 --        b' <- b
@@ -136,13 +138,16 @@ runLMonad (LMonadT lm) =
 --     -- lift :: (Monad m, LMonad m) => m a -> LMonadT l m a
 --     lift m = LMonadT $ lift m
 
-lLift :: (Label l, LMonad m) => m a -> LMonadT l m a
-lLift ma = LMonadT $ do
-    allow <- lift lAllowLift
-    if allow then
-        lift ma
-    else
-        lift lFail
+liftTCB :: (Label l, LMonad m) => m a -> LMonadT l m a
+liftTCB = LMonadT . lift
+
+-- lLift :: (Label l, LMonad m) => m a -> LMonadT l m a
+-- lLift ma = LMonadT $ do
+--     allow <- lift lAllowLift
+--     if allow then
+--         lift ma
+--     else
+--         lift lFail
 
 getCurrentLabel :: (Label l, LMonad m) => LMonadT l m l
 getCurrentLabel = LMonadT $ do
