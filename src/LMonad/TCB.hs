@@ -100,9 +100,12 @@ instance (LMonad m, Label l, MonadBaseControl IO m) => MonadBaseControl IO (LMon
     liftBaseWith f = LMonadT $ liftBaseWith $ \run -> f $ liftM StMT . run . lMonadTState
     restoreM = LMonadT . restoreM . unStMT
 
+instance (LMonad m, Label l) => Semigroup (LMonadT l m a) where
+    a <> b = a >> b
+
 instance (LMonad m, Label l, Monoid (m a)) => Monoid (LMonadT l m a) where
     mempty = lLift mempty
-    mappend a b = a >> b 
+    -- mappend a b = a >> b 
 --    do
 --        a' <- a 
 --        b' <- b
