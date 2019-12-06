@@ -36,6 +36,7 @@ import Control.Monad
 import Control.Monad.Base
 import Control.Monad.Catch
 import Control.Monad.IO.Class
+import Control.Monad.IO.Unlift
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.Control
 import Control.Monad.Trans.State
@@ -263,3 +264,9 @@ swapBase f (LMonadT m) = LMonadT $ do
     ( res, new) <- lift $ f $ (runStateT m) prev
     put new
     return res
+
+instance (MonadUnliftIO m, Label l, LMonad m) => MonadUnliftIO (LMonadT l m) where
+    withRunInIO x = do
+        s <- LMonadT get
+        wrappedWithRunInIO lLift (flip evalStateT s . lMonadTState) x
+

@@ -73,6 +73,7 @@ library
     , monad-control >= 1.0.0.0
     , transformers
     , transformers-base
+    , unliftio-core
   
 Test-Suite test-lmonad
   type:
